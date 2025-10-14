@@ -16,7 +16,7 @@ class UserData(BaseModel):
 if __name__ == "__main__":
     # from interface.supabase_interface import SupabaseInterface
     # interface = SupabaseInterface()
-    from interface.database_interface import DatabaseInterface
+    from interface import DatabaseInterface
     interface = DatabaseInterface()
 
     # user1 = UserData(name=st.secrets["USERS"]["user1"])

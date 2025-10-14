@@ -30,7 +30,7 @@ class FoodLogData(BaseModel):
 if __name__ == "__main__":
     # from interface.supabase_interface import SupabaseInterface
     # interface = SupabaseInterface()
-    from interface.database_interface import DatabaseInterface
+    from interface.database.database_interface import DatabaseInterface
     interface = DatabaseInterface()
 
     test_food_log = FoodLogData(
