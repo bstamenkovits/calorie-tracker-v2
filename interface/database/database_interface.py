@@ -1,5 +1,5 @@
-from interface.database_connection import DatabaseConnection
-from models import UserData, MealData, FoodLogData, IngredientData, ServingData
+from interface.database.connection import DatabaseConnection
+from models import UserData, MealData, FoodLogData, IngredientData, ServingData, LogsFoodData
 from typing import Dict, Any
 
 
@@ -8,12 +8,54 @@ class DatabaseInterface(DatabaseConnection):
     def __init__(self):
         super().__init__()
 
-    def get_users(self) -> list[Dict[str, Any]]:
+    # -------------- #
+    # RETRIEVAL METHODS #
+    # -------------- #
+    def get_users(self) -> list[UserData]:
         """Fetch all users from the 'users' table."""
         query = "SELECT * FROM users;"
         result = self.fetch_results(query)
-        return [UserData(name=row[1]) for row in result]
+        return [UserData(id=id, name=name) for id, name in result]
 
+    def get_meals(self) -> list[MealData]:
+        """Fetch all meals from the 'meals' table."""
+        query = "SELECT * FROM meals;"
+        result = self.fetch_results(query)
+        return [MealData(id=id, name=name) for id, name in result]
+
+    def get_logs_food(self) -> list[LogsFoodData]:
+        """Fetch all food logs from the 'food_logs' table."""
+        query = "SELECT * FROM logs_food;"
+        result = self.fetch_results(query)
+        return [LogsFoodData(
+            date_added=date_added,
+            meal_name=meal_name,
+            ingredient_name=ingredient_name,
+            quantity=quantity,
+            serving_name=serving_name,
+            serving_size_g=serving_size_g,
+            total_weight_g=total_weight_g,
+            total_calories_kcal=total_calories_kcal,
+            total_fat_g=total_fat_g,
+            total_carbs_g=total_carbs_g,
+            total_protein_g=total_protein_g,
+        ) for (
+            date_added,
+            meal_name,
+            ingredient_name,
+            quantity,
+            serving_name,
+            serving_size_g,
+            total_weight_g,
+            total_calories_kcal,
+            total_fat_g,
+            total_carbs_g,
+            total_protein_g,
+        )  in result]
+
+    # -------------- #
+    # INSERT METHODS #
+    # -------------- #
     def insert_user(self, user_data: UserData) -> Dict[str, Any]:
         """Insert a new user into the 'users' table."""
         query = """
@@ -69,6 +111,9 @@ class DatabaseInterface(DatabaseConnection):
         self.execute_query(query, data)
         return data
 
+    # -------------- #
+    # REMOVE METHODS #
+    # -------------- #
     def remove_user(self, user_id: str) -> Dict[str, Any]:
         """Remove a user from the 'users' table by ID."""
         query = """
@@ -123,9 +168,6 @@ class DatabaseInterface(DatabaseConnection):
         data = {"id": food_log_id}
         self.execute_query(query, data)
         return data
-
-
-
 
 
 if __name__ == "__main__":
