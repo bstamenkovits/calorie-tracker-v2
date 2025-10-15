@@ -24,9 +24,18 @@ class DDLManager:
                     sql = file.read()
                     self.connection.execute_query(sql)
 
+    def create_udfs(self):
+        udfs_dir = os.path.join(os.getcwd(), "interface", "database", "ddl", "udfs")
+        for udf in os.listdir(udfs_dir):
+            if udf.endswith(".sql"):
+                with open(os.path.join(udfs_dir, udf), 'r') as file:
+                    sql = file.read()
+                    self.connection.execute_query(sql)
+
 
 if __name__ == "__main__":
     db_connection = DatabaseConnection()
     ddl_manager = DDLManager(db_connection)
     # ddl_manager.create_tables()
-    ddl_manager.create_views()
+    # ddl_manager.create_views()
+    ddl_manager.create_udfs()

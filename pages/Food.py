@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from interface import DatabaseInterface
+from models.udf.logs_food_input import LogsFoodInputData
+from datetime import datetime
 
 db_interface = DatabaseInterface()
 
@@ -15,13 +17,18 @@ st.write("View and Log Food and Calorie Intake")
 
 users = db_interface.get_users()
 meals = db_interface.get_meals()
-logs_food = db_interface.get_logs_food()
 
 
-user = st.pills("User", options=[u.name for u in users], selection_mode="single")
+
+user = st.pills("User", options=users, format_func=lambda u: u.name, selection_mode="single")
 date = st.date_input("Date", value=pd.to_datetime("today"))
-date = date.strftime("%Y-%m-%d")
+date = datetime(3000, 1, 1)
+# date = date.strftime("%Y-%m-%d")
 
+if user is None:
+    st.warning("Please select a user.")
+    st.stop()
+logs_food = db_interface.get_logs_food(LogsFoodInputData(user_id=user.id, date_added=date))
 
 col_ingredients, col_quantity, col_weight, col_calories = st.columns(4)
 with col_ingredients:

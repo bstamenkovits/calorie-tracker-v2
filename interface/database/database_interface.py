@@ -1,5 +1,5 @@
 from interface.database.connection import DatabaseConnection
-from models import UserData, MealData, FoodLogData, IngredientData, ServingData, LogsFoodData
+from models import UserData, MealData, FoodLogData, IngredientData, ServingData, LogsFoodData, LogsFoodInputData
 from typing import Dict, Any
 
 
@@ -23,10 +23,11 @@ class DatabaseInterface(DatabaseConnection):
         result = self.fetch_results(query)
         return [MealData(id=id, name=name) for id, name in result]
 
-    def get_logs_food(self) -> list[LogsFoodData]:
+    def get_logs_food(self, logs_food_input_data: LogsFoodInputData) -> list[LogsFoodData]:
         """Fetch all food logs from the 'food_logs' table."""
-        query = "SELECT * FROM logs_food;"
-        result = self.fetch_results(query)
+        input_data = logs_food_input_data.to_dict()
+        query = "SELECT * FROM get_logs_food(%(user_id)s, %(date_added)s);"
+        result = self.fetch_results(query, input_data)
         return [LogsFoodData(
             date_added=date_added,
             meal_name=meal_name,
