@@ -19,6 +19,7 @@ users = db_interface.get_users()
 meals = db_interface.get_meals()
 
 
+available_ingredients = db_interface.get_ingredients()
 
 user = st.pills("User", options=users, format_func=lambda u: u.name, selection_mode="single")
 date = st.date_input("Date", value=pd.to_datetime("today"))
@@ -34,10 +35,13 @@ col_ingredients, col_quantity, col_weight, col_calories = st.columns(4)
 with col_ingredients:
     # st.write("**Ingredient**")
     for log in logs_food:
-        st.write(f"{log.ingredient_name}")
+        # st.write(f"{log.ingredient_name}")
+        idx = available_ingredients.index(next(i for i in available_ingredients if i.name == log.ingredient_name))
+        st.selectbox("Select Ingredient", options=available_ingredients, format_func=lambda i: i.name, index=idx, label_visibility="collapsed")
 with col_quantity:
     for log in logs_food:
-        st.write(f"{log.quantity} {log.serving_name}")
+        st.number_input("Quantity", min_value=0.0, value=log.quantity, step=0.1, label_visibility="collapsed")
+        st.write(f"{log.serving_name}")
 with col_weight:
     for log in logs_food:
         st.write(f"{log.total_weight_g} g")

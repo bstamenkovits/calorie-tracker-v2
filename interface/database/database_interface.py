@@ -23,6 +23,20 @@ class DatabaseInterface(DatabaseConnection):
         result = self.fetch_results(query)
         return [MealData(id=id, name=name) for id, name in result]
 
+    def get_ingredients(self) -> list[IngredientData]:
+        """Fetch all ingredients from the 'ingredients' table."""
+        query = "SELECT * FROM ingredients;"
+        result = self.fetch_results(query)
+        return [IngredientData(
+            id=id,
+            name=name,
+            calories_kcal=calories_kcal,
+            fat_g=fat_g,
+            carbs_g=carbs_g,
+            protein_g=protein_g,
+            type=type
+        ) for id, name, calories_kcal, fat_g, carbs_g, protein_g, type in result]
+
     def get_logs_food(self, logs_food_input_data: LogsFoodInputData) -> list[LogsFoodData]:
         """Fetch all food logs from the 'food_logs' table."""
         input_data = logs_food_input_data.to_dict()
