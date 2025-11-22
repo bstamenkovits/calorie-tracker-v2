@@ -31,7 +31,7 @@ if user is None:
     st.stop()
 logs_food = db_interface.get_logs_food(LogsFoodInputData(user_id=user.id, date_added=date))
 
-col_ingredients, col_quantity, col_weight, col_calories = st.columns(4)
+col_ingredients, col_quantity, col_serving, col_weight, col_calories = st.columns(5)
 with col_ingredients:
     # st.write("**Ingredient**")
     for log in logs_food:
@@ -41,6 +41,8 @@ with col_ingredients:
 with col_quantity:
     for log in logs_food:
         st.number_input("Quantity", min_value=0.0, value=log.quantity, step=0.1, label_visibility="collapsed")
+with col_serving:
+    for log in logs_food:
         st.write(f"{log.serving_name}")
 with col_weight:
     for log in logs_food:
